@@ -1,11 +1,14 @@
 package vitas;
 
 import Modelo.Conexion;
-import Modelo.TipoDocumento;
+import Controlador.*;
+import Modelo.Sucursal;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.Iterator;
 import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JOptionPane;
@@ -15,19 +18,40 @@ import javax.swing.JOptionPane;
  * @author The Frank R
  */
 public class addUser extends javax.swing.JDialog {
+
     ComboBoxModel modeloEnumcbTipoDocumento;
     Conexion conexion = new Conexion();
     Connection Connection;
     Statement st;
     ResultSet rs;
+    ArrayList mListaSucursales;
+    ComboboxSucursal InstanciaClaseComboboxSucursal;
 
     public addUser(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         modeloEnumcbTipoDocumento = new DefaultComboBoxModel(TipoDocumento.values());
         initComponents();
+        InstanciaClaseComboboxSucursal = new ComboboxSucursal();
+        mListaSucursales = new ArrayList();
+        llenarComboboxSucursales();
         setLocationRelativeTo(null);
-        
-        
+
+    }
+
+    public String llenarComboboxSucursales() {
+        mListaSucursales = InstanciaClaseComboboxSucursal.gatListaSucursalkes();
+        Iterator iterator = mListaSucursales.iterator();
+        while (iterator.hasNext()) {
+            Sucursal sucursal = (Sucursal) iterator.next();
+            cbSucursal.addItem(sucursal);
+
+        }
+        System.out.println(mListaSucursales);
+        String nombreSucursal = cbSucursal.getSelectedItem().toString();
+        String query = "SELECT idSucursal FROM sucursal WHERE nombreSucursal= '"+ nombreSucursal +"'";
+
+        return query;
+
     }
 
     @SuppressWarnings("unchecked")
@@ -49,6 +73,8 @@ public class addUser extends javax.swing.JDialog {
         jLabel7 = new javax.swing.JLabel();
         btnGuardar = new javax.swing.JButton();
         bntCancelar = new javax.swing.JButton();
+        jLabel8 = new javax.swing.JLabel();
+        cbSucursal = new javax.swing.JComboBox<>();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -64,6 +90,11 @@ public class addUser extends javax.swing.JDialog {
         jLabel4.setText("Tipo de documento");
 
         cbTipoDocumento.setModel(modeloEnumcbTipoDocumento);
+        cbTipoDocumento.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cbTipoDocumentoActionPerformed(evt);
+            }
+        });
 
         jLabel5.setText("Documento:");
 
@@ -87,6 +118,8 @@ public class addUser extends javax.swing.JDialog {
             }
         });
 
+        jLabel8.setText("Sucursal");
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -98,16 +131,21 @@ public class addUser extends javax.swing.JDialog {
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(cbTipoDocumento, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 176, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(jLabel3)
                                 .addGroup(jPanel1Layout.createSequentialGroup()
                                     .addGap(75, 75, 75)
-                                    .addComponent(txtApeliidos, javax.swing.GroupLayout.PREFERRED_SIZE, 176, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addComponent(jLabel3))))
+                                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(txtNombre, javax.swing.GroupLayout.PREFERRED_SIZE, 170, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(txtApeliidos, javax.swing.GroupLayout.PREFERRED_SIZE, 176, javax.swing.GroupLayout.PREFERRED_SIZE))))))
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(164, 164, 164)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(txtEmail, javax.swing.GroupLayout.PREFERRED_SIZE, 176, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(txtDocumento, javax.swing.GroupLayout.PREFERRED_SIZE, 176, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 73, Short.MAX_VALUE)
+                        .addGap(84, 84, 84)
+                        .addComponent(jLabel8)
+                        .addGap(46, 46, 46)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(txtEmail, javax.swing.GroupLayout.DEFAULT_SIZE, 176, Short.MAX_VALUE)
+                            .addComponent(txtDocumento, javax.swing.GroupLayout.DEFAULT_SIZE, 176, Short.MAX_VALUE)
+                            .addComponent(cbSucursal, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 67, Short.MAX_VALUE)
                 .addComponent(jLabel7)
                 .addGap(23, 23, 23))
             .addGroup(jPanel1Layout.createSequentialGroup()
@@ -118,9 +156,7 @@ public class addUser extends javax.swing.JDialog {
                             .addComponent(jLabel2)
                             .addComponent(jLabel4)
                             .addComponent(jLabel5)
-                            .addComponent(jLabel6))
-                        .addGap(34, 34, 34)
-                        .addComponent(txtNombre, javax.swing.GroupLayout.PREFERRED_SIZE, 176, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jLabel6)))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(181, 181, 181)
                         .addComponent(jLabel1))
@@ -129,7 +165,7 @@ public class addUser extends javax.swing.JDialog {
                         .addComponent(btnGuardar)
                         .addGap(18, 18, 18)
                         .addComponent(bntCancelar)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(132, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -161,11 +197,15 @@ public class addUser extends javax.swing.JDialog {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txtEmail, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel6))
-                .addGap(37, 37, 37)
+                .addGap(18, 18, 18)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel8)
+                    .addComponent(cbSucursal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 30, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnGuardar)
                     .addComponent(bntCancelar))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(29, 29, 29))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -191,40 +231,55 @@ public class addUser extends javax.swing.JDialog {
     private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
         String nombre = txtNombre.getText();
         String Apellido = txtApeliidos.getText();
-        String TipoDocumento = (String) cbTipoDocumento.getSelectedItem();
+        String TipoDocumento = cbTipoDocumento.getSelectedItem().toString();
         System.out.println(TipoDocumento);
         String Documento = txtDocumento.getText();
         String correo = txtEmail.getText();
-        System.out.println("nombre: " + nombre + " " + Apellido + "tipo de docmuento"
-                + TipoDocumento + " " + Documento + " correo  " + correo
-        );
+        String queryIdSucursal = llenarComboboxSucursales();
+        System.out.println(queryIdSucursal);
 
         if (nombre.isEmpty() || Apellido.isEmpty() || Documento.isEmpty() || correo.isEmpty()) {
             JOptionPane.showMessageDialog(this, "faltan campos por diligenciar", "Nuevo Empleado", JOptionPane.WARNING_MESSAGE);
         } else {
-        String queryCrearEmpleado = "INSERT INTO `empleados`( `NombreEmp`, `Apeliidos`, `TipoDeDocumento`, `Documento`, `Correo`) VALUES ('" + nombre
-                    + "','" + Apellido + "','" + TipoDocumento + "','" + Documento + "','" + correo + "')";
-            
-        
-           try{
-               Connection = conexion.getConection();
-               st =Connection.createStatement();
-               st.executeUpdate(queryCrearEmpleado);
-               JOptionPane.showMessageDialog(this, "Registro exitoso", "Nuevo Empleado", JOptionPane.ERROR_MESSAGE);
-               
-           }catch(SQLException e){
-               JOptionPane.showMessageDialog(this, "No se pudo crear");
-           }
-           this.dispose();
+
+            try {
+                Connection = conexion.getConection();
+                st = Connection.createStatement();
+                rs = st.executeQuery(queryIdSucursal);
+                while (rs.next()) {
+                    int idSucursal = rs.getInt("idSucursal");
+                    String queryCrearEmpleado = "INSERT INTO `empleado`(`nombreEmp`, `apellidos`, `tipoDocumento`, `documento`, `correo`, `FK_idSucursal`) VALUES ('" + nombre+"','" + Apellido + "','" + TipoDocumento + "','" + Documento + "','" + correo + "',"+idSucursal+")";
+
+                    try {
+                        Connection = conexion.getConection();
+                        st = Connection.createStatement();
+                        st.executeUpdate(queryCrearEmpleado);
+                        JOptionPane.showMessageDialog(this, "Registro exitoso", "Nuevo Empleado", JOptionPane.ERROR_MESSAGE);
+
+                    } catch (SQLException e) {
+                        JOptionPane.showMessageDialog(this, "No se pudo crear");
+                    }
+
+                }
+
+            } catch (SQLException e) {
+                System.out.println("error query sucursal");
+            }
+
+            this.dispose();
+
         }
     }//GEN-LAST:event_btnGuardarActionPerformed
 
     private void bntCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bntCancelarActionPerformed
-        
-        
-         this.dispose();
-        
+
+        this.dispose();
+
     }//GEN-LAST:event_bntCancelarActionPerformed
+
+    private void cbTipoDocumentoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbTipoDocumentoActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_cbTipoDocumentoActionPerformed
 
     /**
      * @param args the command line arguments
@@ -272,6 +327,7 @@ public class addUser extends javax.swing.JDialog {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton bntCancelar;
     private javax.swing.JButton btnGuardar;
+    private javax.swing.JComboBox<Sucursal> cbSucursal;
     private javax.swing.JComboBox<String> cbTipoDocumento;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
@@ -280,6 +336,7 @@ public class addUser extends javax.swing.JDialog {
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JTextField txtApeliidos;
     private javax.swing.JTextField txtDocumento;
